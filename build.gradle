@@ -1,0 +1,162 @@
+apply plugin: "java"
+apply plugin: "maven"
+apply plugin: "signing"
+
+group = "com.glookast.api"
+version = "1.0.0"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes "Implementation-Version": version
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+configurations {
+    jaxws
+    schemas
+}
+
+dependencies {
+    jaxws "com.sun.xml.ws:jaxws-tools:2.3.0"
+    jaxws "org.jvnet.jaxb2_commons:jaxb2-value-constructor:3.0"
+    schemas "com.glookast.api:api-capture-playout-schemas:1.0.0"
+    runtime "com.glookast.api:api-capture-playout-schemas:1.0.0"
+    compile "com.glookast.commons:commons-timecode:1.2.0"
+}
+
+def generatedSrcDir = file("generated/main/java")
+def generatedResourcesDir = file("generated/main/resources")
+
+sourceSets.main.java.srcDirs generatedSrcDir
+
+def capturePlayoutWsdl = file("generated/main/resources/com/glookast/api/capture/playout/playout.wsdl")
+def capturePlayoutXjb = file("src/main/bindings/playout.xjb")
+
+task extractSchemas(type: Copy) {
+    from {
+        configurations.schemas.collect { zipTree(it) }
+    }
+    into generatedResourcesDir
+    exclude "META-INF/**"
+}
+
+task wsimport  {
+    inputs.file capturePlayoutWsdl
+    inputs.file capturePlayoutXjb
+    inputs.dir generatedResourcesDir
+    outputs.dir generatedSrcDir
+    doLast{
+        ant {
+            sourceSets.main.java.outputDir.mkdirs()
+            generatedSrcDir.mkdirs()
+            taskdef(name: "wsimport",
+                classname: "com.sun.tools.ws.ant.WsImport",
+                classpath: configurations.jaxws.asPath)
+            wsimport(keep:true,
+                destdir: sourceSets.main.java.outputDir,
+                sourcedestdir: generatedSrcDir,
+                wsdl: capturePlayoutWsdl,
+                wsdlLocation: "/com/glookast/api/capture/playout/playout.wsdl",
+                binding: capturePlayoutXjb,
+                xnocompile: true) {
+                xjcarg(value: "-Xvalue-constructor")
+            }
+        }
+    }
+}
+
+wsimport.dependsOn(extractSchemas)
+
+compileJava.dependsOn(wsimport)
+
+clean {
+    doLast {
+        if (generatedSrcDir.exists()) {
+            generatedSrcDir.listFiles().each { f -> delete f }
+        }
+        if (generatedResourcesDir.exists()) {
+            generatedResourcesDir.listFiles().each { f -> delete f }
+        }
+    }
+}
+
+task javadocJar(type: Jar) {
+    classifier = "javadoc"
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name "api-capture-playout"
+                packaging "jar"
+                // optionally artifactId can be defined here
+                description "Generated artifacts used for interfacing with Glookast Products"
+                url "http://github.com/glookast/api-capture-playout"
+
+                scm {
+                    connection "scm:git:git://github.com/glookast/api-capture-playout.git"
+                    developerConnection "scm:git:ssh://github.com:glookast/api-capture-playout.git"
+                    url "http://github.com/glookast/api-capture-playout/tree/master"
+                }
+
+                licenses {
+                    license {
+                        name "The Apache License, Version 2.0"
+                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id "joostrovers"
+                        name "Joost Rovers"
+                        email "joost.rovers@glookast.com"
+                    }
+                }
+            }
+        }
+    }
+}

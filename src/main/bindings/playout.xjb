@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               xmlns:time="http://timecode.commons.glookast.com"
+               jaxb:extensionBindingPrefixes="xjc"
+               jaxb:version="2.1">
+
+    <jaxb:bindings scd="x-schema::time" xmlns:tns="http://timecode.commons.glookast.com">
+        <jaxb:schemaBindings map="false"/>
+        <jaxb:bindings scd="~time:TimecodeCollection">
+            <jaxb:class ref="com.glookast.commons.timecode.TimecodeCollection"/>
+        </jaxb:bindings>
+        <jaxb:bindings scd="~time:TimecodePoint">
+            <jaxb:class ref="com.glookast.commons.timecode.TimecodePoint"/>
+        </jaxb:bindings>
+        <jaxb:bindings scd="~time:TimecodeSource">
+            <jaxb:class ref="com.glookast.commons.timecode.TimecodeSource"/>
+        </jaxb:bindings>
+    </jaxb:bindings>
+</jaxb:bindings>

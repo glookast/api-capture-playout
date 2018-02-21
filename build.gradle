@@ -37,8 +37,8 @@ configurations {
 dependencies {
     jaxws "com.sun.xml.ws:jaxws-tools:2.3.0"
     jaxws "org.jvnet.jaxb2_commons:jaxb2-value-constructor:3.0"
-    schemas "com.glookast.api:api-playout-schemas:1.0.0-SNAPSHOT"
-    runtime "com.glookast.api:api-playout-schemas:1.0.0-SNAPSHOT"
+    schemas "com.glookast.api:api-capture-playout-schemas:1.0.0-SNAPSHOT"
+    runtime "com.glookast.api:api-capture-playout-schemas:1.0.0-SNAPSHOT"
     compile "com.glookast.commons:commons-timecode:1.2.0"
 }
 
@@ -47,8 +47,8 @@ def generatedResourcesDir = file("generated/main/resources")
 
 sourceSets.main.java.srcDirs generatedSrcDir
 
-def captureInfoWsdl = file("generated/main/resources/com/glookast/api/playout/playout.wsdl")
-def captureInfoXjb = file("src/main/bindings/playout.xjb")
+def capturePlayoutWsdl = file("generated/main/resources/com/glookast/api/capture/playout/playout.wsdl")
+def capturePlayoutXjb = file("src/main/bindings/playout.xjb")
 
 task extractSchemas(type: Copy) {
     from {
@@ -59,8 +59,8 @@ task extractSchemas(type: Copy) {
 }
 
 task wsimport  {
-    inputs.file captureInfoWsdl
-    inputs.file captureInfoXjb
+    inputs.file capturePlayoutWsdl
+    inputs.file capturePlayoutXjb
     inputs.dir generatedResourcesDir
     outputs.dir generatedSrcDir
     doLast{
@@ -73,9 +73,9 @@ task wsimport  {
             wsimport(keep:true,
                 destdir: sourceSets.main.java.outputDir,
                 sourcedestdir: generatedSrcDir,
-                wsdl: captureInfoWsdl,
-                wsdlLocation: "/com/glookast/api/playout/playout.wsdl",
-                binding: captureInfoXjb,
+                wsdl: capturePlayoutWsdl,
+                wsdlLocation: "/com/glookast/api/capture/playout/playout.wsdl",
+                binding: capturePlayoutXjb,
                 xnocompile: true) {
                 xjcarg(value: "-Xvalue-constructor")
             }
@@ -130,16 +130,16 @@ uploadArchives {
             }
 
             pom.project {
-                name "api-playout"
+                name "api-capture-playout"
                 packaging "jar"
                 // optionally artifactId can be defined here
                 description "Generated artifacts used for interfacing with Glookast Products"
-                url "http://github.com/glookast/api-playout"
+                url "http://github.com/glookast/api-capture-playout"
 
                 scm {
-                    connection "scm:git:git://github.com/glookast/api-playout.git"
-                    developerConnection "scm:git:ssh://github.com:glookast/api-playout.git"
-                    url "http://github.com/glookast/api-playout/tree/master"
+                    connection "scm:git:git://github.com/glookast/api-capture-playout.git"
+                    developerConnection "scm:git:ssh://github.com:glookast/api-capture-playout.git"
+                    url "http://github.com/glookast/api-capture-playout/tree/master"
                 }
 
                 licenses {

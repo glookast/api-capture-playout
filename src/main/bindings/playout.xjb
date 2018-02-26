@@ -11,8 +11,8 @@
         <jaxb:bindings scd="~time:TimecodeCollection">
             <jaxb:class ref="com.glookast.commons.timecode.TimecodeCollection"/>
         </jaxb:bindings>
-        <jaxb:bindings scd="~time:TimecodePoint">
-            <jaxb:class ref="com.glookast.commons.timecode.TimecodePoint"/>
+        <jaxb:bindings scd="~time:TimecodeSequence">
+            <jaxb:class ref="com.glookast.commons.timecode.TimecodeSequence"/>
         </jaxb:bindings>
         <jaxb:bindings scd="~time:TimecodeSource">
             <jaxb:class ref="com.glookast.commons.timecode.TimecodeSource"/>

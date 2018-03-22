@@ -5,9 +5,13 @@
                xmlns:time="http://timecode.commons.glookast.com"
                jaxb:extensionBindingPrefixes="xjc"
                jaxb:version="2.1">
-
+    <jaxb:globalBindings>
+        <xjc:javaType name="com.glookast.commons.timecode.Timecode" xmlType="time:Timecode" adapter="com.glookast.commons.timecode.XmlAdapterTimecode"/>
+        <xjc:javaType name="com.glookast.commons.timecode.TimecodeDuration" xmlType="time:TimecodeDuration" adapter="com.glookast.commons.timecode.XmlAdapterTimecodeDuration"/>
+        <xjc:serializable/>
+    </jaxb:globalBindings>
     <jaxb:bindings scd="x-schema::time" xmlns:tns="http://timecode.commons.glookast.com">
-        <jaxb:schemaBindings map="false"/>
+        <jaxb:schemaBindings map="true"/>
         <jaxb:bindings scd="~time:TimecodeCollection">
             <jaxb:class ref="com.glookast.commons.timecode.TimecodeCollection"/>
         </jaxb:bindings>

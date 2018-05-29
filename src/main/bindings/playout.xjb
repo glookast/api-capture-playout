@@ -6,8 +6,8 @@
                jaxb:extensionBindingPrefixes="xjc"
                jaxb:version="2.1">
     <jaxb:globalBindings>
-        <xjc:javaType name="com.glookast.commons.timecode.Timecode" xmlType="time:Timecode" adapter="com.glookast.commons.timecode.XmlAdapterTimecode"/>
-        <xjc:javaType name="com.glookast.commons.timecode.TimecodeDuration" xmlType="time:TimecodeDuration" adapter="com.glookast.commons.timecode.XmlAdapterTimecodeDuration"/>
+        <xjc:javaType name="com.glookast.commons.timecode.Timecode" xmlType="time:Timecode" adapter="com.glookast.commons.timecode.xml.XmlAdapterTimecode"/>
+        <xjc:javaType name="com.glookast.commons.timecode.TimecodeDuration" xmlType="time:TimecodeDuration" adapter="com.glookast.commons.timecode.xml.XmlAdapterTimecodeDuration"/>
         <xjc:serializable/>
     </jaxb:globalBindings>
     <jaxb:bindings scd="x-schema::time" xmlns:tns="http://timecode.commons.glookast.com">

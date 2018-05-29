@@ -19,7 +19,7 @@
             <jaxb:class ref="com.glookast.commons.timecode.TimecodeSequence"/>
         </jaxb:bindings>
         <jaxb:bindings scd="~time:TimecodeSource">
-            <jaxb:class ref="com.glookast.commons.timecode.TimecodeSource"/>
+            <jaxb:typesafeEnumClass ref="com.glookast.commons.timecode.TimecodeSource"/>
         </jaxb:bindings>
     </jaxb:bindings>
 </jaxb:bindings>
